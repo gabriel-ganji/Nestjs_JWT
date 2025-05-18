@@ -1,0 +1,66 @@
+@baseUrl = http://localhost:3000
+
+#Messages
+###List all messages
+GET {{baseUrl}}/message/
+?limit=10
+&offset=1
+Authorization: Bearer Here_comes_the_token
+# &user=gabriel
+###List only one message
+GET {{baseUrl}}/message/155
+Authorization: Bearer Here_comes_the_token
+###Create a message
+#For testing whiteList: true
+POST {{baseUrl}}/message/
+Content-Type: application/json
+
+{
+    "text": "Hey Jhon!",
+    "fromId": 1,
+    "toId": 8
+}
+
+###Update a message
+PATCH {{baseUrl}}/message/14/
+Content-Type: application/json
+
+{
+    "text": "I love you my brother S2"
+}
+
+###Delete a message
+DELETE {{baseUrl}}/message/2/
+
+
+
+#Person
+###List all people
+GET {{baseUrl}}/person/
+?limite=10
+&offset=10
+&user=gabriel
+###List only one message
+GET {{baseUrl}}/person/1
+###Create a message
+#For testing whiteList: true
+POST {{baseUrl}}/person/
+Content-Type: application/json
+
+{
+    "email": "JHONATAN@gmail.com",
+    "name": "Gabriel Rodrigues Fernandes",
+    "password": "123456"
+}
+
+###Update a person
+PATCH {{baseUrl}}/person/8/
+Content-Type: application/json
+
+{
+    "name": "Jhonatan Rodrigues da Silva"
+    # "password": "12345678"
+}
+
+###Delete a person
+DELETE {{baseUrl}}/person/7/

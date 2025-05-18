@@ -1,5 +1,5 @@
 {
-  "name": "NestJS_CRUD",
+  "name": "NestJS ENV",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
+    "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^10.0.0",
     "@nestjs/mapped-types": "^2.1.0",
     "@nestjs/platform-express": "^10.0.0",

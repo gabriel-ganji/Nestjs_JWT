@@ -6,6 +6,7 @@ import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class MessageService {
@@ -13,7 +14,11 @@ export class MessageService {
     @InjectRepository(Messages)
     private readonly messagesRepository: Repository<Messages>,
     private readonly personService: PersonService,
-  ) {}
+    private readonly ConfigService: ConfigService,
+  ) {
+    const databaseUsername = this.ConfigService.get<string>('DATABASE_USERNAME');
+    console.log({ databaseUsername });
+  }
 
   throwNotFoundError() {
     throw new NotFoundException('Message not found');

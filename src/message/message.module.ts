@@ -4,10 +4,15 @@ import { MessageService } from './message.service';
 import { Messages } from './entities/message.entity';
 import { MessageController } from './message.controller';
 import { PersonModule } from 'src/person/person.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Messages]), PersonModule],
+  imports: [
+    ConfigModule,
+    TypeOrmModule.forFeature([Messages]),
+    PersonModule
+  ],
   controllers: [MessageController],
   providers: [MessageService],
 })
-export class MessageModule {}
+export class MessageModule { }

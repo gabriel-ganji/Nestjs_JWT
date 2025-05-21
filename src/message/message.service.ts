@@ -4,9 +4,10 @@ import { Messages } from './entities/message.entity';
 import { PersonService } from 'src/person/person.service';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
-import { ConfigService } from '@nestjs/config';
+import { ConfigService, ConfigType } from '@nestjs/config';
+import messageConfig from './message.config';
 
 @Injectable()
 export class MessageService {
@@ -14,10 +15,10 @@ export class MessageService {
     @InjectRepository(Messages)
     private readonly messagesRepository: Repository<Messages>,
     private readonly personService: PersonService,
-    private readonly ConfigService: ConfigService,
+    @Inject(messageConfig.KEY)
+    private readonly messageConfiguration: ConfigType<typeof messageConfig>,
   ) {
-    const databaseUsername = this.ConfigService.get<string>('DATABASE_USERNAME');
-    console.log({ databaseUsername });
+    console.log(messageConfiguration);
   }
 
   throwNotFoundError() {

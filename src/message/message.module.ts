@@ -5,10 +5,11 @@ import { Messages } from './entities/message.entity';
 import { MessageController } from './message.controller';
 import { PersonModule } from 'src/person/person.module';
 import { ConfigModule } from '@nestjs/config';
+import messageConfig from './message.config';
 
 @Module({
   imports: [
-    ConfigModule,
+    ConfigModule.forFeature(messageConfig),
     TypeOrmModule.forFeature([Messages]),
     PersonModule
   ],

@@ -28,7 +28,7 @@ import { ReqDataParam } from 'src/common/params/req-data-param.decorator';
 @Controller('message')
 // If @UseInterceptors(AddHeaderInterceptor) stays above the class all methods will be able to use it
 export class MessageController {
-  constructor(private readonly messageService: MessageService) {}
+  constructor(private readonly messageService: MessageService) { }
 
   //Route to find all messages
   @HttpCode(201)

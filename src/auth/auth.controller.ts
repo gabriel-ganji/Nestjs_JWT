@@ -6,10 +6,10 @@ import { LoginDto } from "./dto/login.dto";
 export class AuthController {
     constructor(
         private readonly authService: AuthService
-    ){}
+    ) { }
 
     @Post()
-    login(@Body() loginDto: LoginDto ) {
+    login(@Body() loginDto: LoginDto) {
         return this.authService.login(loginDto);
     }
 }

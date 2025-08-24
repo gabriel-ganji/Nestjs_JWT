@@ -8,7 +8,7 @@ GET {{baseUrl}}/message/
 Authorization: Bearer Here_comes_the_token
 # &user=gabriel
 ###List only one message
-GET {{baseUrl}}/message/155
+GET {{baseUrl}}/message/1
 Authorization: Bearer Here_comes_the_token
 ###Create a message
 #For testing whiteList: true
@@ -48,18 +48,18 @@ POST {{baseUrl}}/person/
 Content-Type: application/json
 
 {
-    "email": "JHONATAN@gmail.com",
+    "email": "jhon@gmail.com",
     "name": "Gabriel Rodrigues Fernandes",
     "password": "123456"
 }
 
 ###Update a person
-PATCH {{baseUrl}}/person/8/
+PATCH {{baseUrl}}/person/1/
 Content-Type: application/json
 
 {
-    "name": "Jhonatan Rodrigues da Silva"
-    # "password": "12345678"
+    "name": "Gabriel Rodrigues Fernandes",
+    "password": "aaaaa"
 }
 
 ###Delete a person

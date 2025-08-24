@@ -16,6 +16,7 @@ import { ErrorExceptionFilter } from './common/filters/error-exception.filter';
 import { ConfigModule, ConfigType } from '@nestjs/config';
 import { GlobalConfigModule } from './global-config/global-config.module';
 import globalConfig from './global-config/global.config';
+import { AuthModule } from './auth/auth.module';
 // import appConfig from './app.config';
 
 @Module({
@@ -40,6 +41,7 @@ import globalConfig from './global-config/global.config';
     MessageModule,
     PersonModule,
     GlobalConfigModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [
@@ -48,10 +50,10 @@ import globalConfig from './global-config/global.config';
       provide: APP_FILTER,
       useClass: ErrorExceptionFilter,
     },
-    {
-      provide: APP_GUARD,
-      useClass: IsAdminGuard,
-    },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: IsAdminGuard,
+    // },
   ],
 })
 export class AppModule implements NestModule {

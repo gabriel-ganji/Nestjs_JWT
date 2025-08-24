@@ -64,3 +64,17 @@ Content-Type: application/json
 
 ###Delete a person
 DELETE {{baseUrl}}/person/7/
+
+
+
+###AUTH
+POST {{baseUrl}}/auth/
+Content-Type: application/json
+
+{
+    "email": "gabriel@gmail.com",
+    "password": "Senha123!"
+}
+
+
+

@@ -14,6 +14,8 @@ import { CreatePersonDto } from './dto/create-person.dto';
 import { UpdatePersonDto } from './dto/update-person.dto';
 import { AuthTokenGuard } from 'src/auth/guards/auth-token.guard';
 import { REQUEST_TOKEN_PAYLOAD_KEY } from 'src/auth/auth.constants';
+import { TokenPayloadParam } from 'src/auth/params/token-payload.param';
+import { TokenPayloadDto } from 'src/auth/dto/token-payload.dto';
 
 @UseGuards(AuthTokenGuard)
 @Controller('person')
@@ -37,12 +39,16 @@ export class PersonController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePersonDto: UpdatePersonDto) {
-    return this.personService.update(+id, updatePersonDto);
+  update(
+    @Param('id') id: string, 
+    @Body() updatePersonDto: UpdatePersonDto,
+    @TokenPayloadParam() tokenPayload: TokenPayloadDto
+  ) {
+    return this.personService.update(+id, updatePersonDto, tokenPayload);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.personService.remove(+id);
+  remove(@Param('id') id: string, @TokenPayloadParam() tokenPayload: TokenPayloadDto) {
+    return this.personService.remove(+id, tokenPayload);
   }
 }

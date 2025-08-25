@@ -39,7 +39,9 @@ DELETE {{baseUrl}}/message/2/
 GET {{baseUrl}}/person/
 ?limite=10
 &offset=10
-&user=gabriel
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjYsImVtYWlsIjoiamhvbjJAZ21haWwuY29tIiwiaWF0IjoxNzU2MTQ3NjQ4LCJleHAiOjE3NTYxNTEyNDgsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzAwMCIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzAwMCJ9.gd71_NjiKf9xCwYWEPAb1AhJvvzru34p4LFHwGARwBs
+
+# &user=gabriel
 ###List only one message
 GET {{baseUrl}}/person/1
 ###Create a message

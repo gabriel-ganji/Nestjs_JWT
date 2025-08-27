@@ -7,6 +7,7 @@ import { HashingService } from "./hashing/hashing.service";
 import jwtConfig from "./config/jwt.config";
 import { ConfigType } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
+import { RefreshTokenDto } from "./dto/refresh-token.dto";
 
 @Injectable()
 export class AuthService {
@@ -18,7 +19,7 @@ export class AuthService {
         @Inject(jwtConfig.KEY)
         private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
         private readonly jwtService: JwtService
-    ) {}
+    ) { }
 
     async login(loginDto: LoginDto) {
 
@@ -44,22 +45,61 @@ export class AuthService {
             throw new UnauthorizedException('Usuário ou senha inválida');
         }
 
-        const accessToken = await this.jwtService.signAsync(
+        return this.createTokens(person);
+    }
+
+    private async createTokens(person: Person) {
+        const accessToken = await this.signJwtAsync<Partial<Person>>(
+            person.id,
+            this.jwtConfiguration.ttl,
+            { email: person.email }
+        );
+
+        const refreshToken = await this.signJwtAsync(
+            person.id,
+            this.jwtConfiguration.refreshTtl
+        );
+
+        return {
+            accessToken,
+            refreshToken,
+        };
+
+    }
+
+    private async signJwtAsync<T>(sub: number, expiresIn: number, payload?: T) {
+        return await this.jwtService.signAsync(
             {
-                sub: person.id,
-                email: person.email,
+                sub,
+                ...payload,
             },
             {
                 audience: this.jwtConfiguration.aud,
                 issuer: this.jwtConfiguration.issuer,
                 secret: this.jwtConfiguration.secret,
-                expiresIn: this.jwtConfiguration.ttl,
+                expiresIn,
             }
-        )
-
-        return {
-            accessToken 
-        };
-
+        );
     }
+
+    async refreshTokens(refreshTokenDto: RefreshTokenDto) {
+        try {
+            const { sub } = await this.jwtService.verifyAsync(
+                refreshTokenDto.refreshToken,
+                this.jwtConfiguration,
+            );
+
+            const user = await this.personRepository.findOneBy({ id: sub });
+            
+            if(!user) {
+                throw new Error('Pessoa não encontrada');
+            }
+
+            return this.createTokens(user);
+
+        } catch (error) {
+            throw new UnauthorizedException(error.message);
+        }
+    }
+
 }

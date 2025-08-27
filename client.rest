@@ -2,6 +2,8 @@
 
 @authToken = {{authorization.response.body.accessToken}}
 
+@refreshToken = {{authorization.response.body.refreshToken}}
+
 #Messages
 ###List all messages
 GET {{baseUrl}}/message/
@@ -81,8 +83,18 @@ Content-Type: application/json
 
 {
     "email": "Joseph@gmail.com",
-    "password": "123456"
+    "password": "Senha123!"
 }
+
+###ReAuthenticate
+# @name reAthenticate
+POST {{baseUrl}}/auth/refresh
+Content-Type: application/json
+
+{
+    "refreshToken": "{{refreshToken}}"
+}
+
 
 
 

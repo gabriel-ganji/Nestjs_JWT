@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -17,12 +18,12 @@ export class PersonService {
     @InjectRepository(Person)
     private readonly personRepository: Repository<Person>,
     private readonly hashingService: HashingService,
-  ) {}
+  ) { }
 
   async create(createPersonDto: CreatePersonDto) {
 
     const passwordHash = await this.hashingService.hash(
-      createPersonDto.password,   
+      createPersonDto.password,
     );
 
     try {
@@ -71,11 +72,11 @@ export class PersonService {
       name: updatePersonDto.name,
     };
 
-    if(updatePersonDto.password) {
+    if (updatePersonDto.password) {
 
       const passwordHash = await this.hashingService.hash(updatePersonDto.password);
       personData['passwordHash'] = passwordHash;
-    
+
     }
 
     const person = await this.personRepository.preload({
@@ -85,6 +86,10 @@ export class PersonService {
 
     if (!person) {
       throw new NotFoundException('Pessoa não encontrada');
+    }
+
+    if (person.id !== tokenPayload.sub) {
+      throw new ForbiddenException('Acesso negado, você não é essa pessoa!');
     }
 
     return this.personRepository.save(person);
@@ -97,6 +102,10 @@ export class PersonService {
 
     if (!person) {
       throw new NotFoundException('Pessoa não encontrada.');
+    }
+
+    if (person.id !== tokenPayload.sub) {
+      throw new ForbiddenException('Acesso negado, você não é essa pessoa!');
     }
 
     return this.personRepository.remove(person);

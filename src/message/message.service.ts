@@ -4,10 +4,12 @@ import { Messages } from './entities/message.entity';
 import { PersonService } from 'src/person/person.service';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { ConfigService, ConfigType } from '@nestjs/config';
 import messageConfig from './message.config';
+import { TokenPayloadDto } from 'src/auth/dto/token-payload.dto';
+import { MESSAGES } from '@nestjs/core/constants';
 
 @Injectable()
 export class MessageService {
@@ -73,10 +75,10 @@ export class MessageService {
     this.throwNotFoundError();
   }
 
-  async create(createMessageDto: CreateMessageDto) {
-    const { fromId, toId } = createMessageDto;
+  async create(createMessageDto: CreateMessageDto, tokenPayload: TokenPayloadDto) {
+    const { toId } = createMessageDto;
     //I need find the person that is creating the message
-    const from = await this.personService.findOne(fromId);
+    const from = await this.personService.findOne(tokenPayload.sub);
     //I need find the person that will receive the message
     const to = await this.personService.findOne(toId);
 
@@ -94,15 +96,25 @@ export class MessageService {
       ...message,
       from: {
         id: message.from.id,
+        name: message.from.name,
       },
       to: {
         id: message.to.id,
+        name: message.to.name,
       },
     };
   }
 
-  async update(id: number, updateMessageDto: UpdateMessageDto) {
+  async update(
+    id: number, updateMessageDto: UpdateMessageDto,
+    tokenPayload: TokenPayloadDto,
+  ) {
+
     const message = await this.findOne(id);
+
+    if (message.from.id !== tokenPayload.sub) {
+      throw new ForbiddenException("Este recado não é seu!");
+    }
 
     message.text = updateMessageDto?.text ?? message.text;
     message.read = updateMessageDto?.read ?? message.read;
@@ -110,10 +122,16 @@ export class MessageService {
     await this.messagesRepository.save(message);
 
     return message;
+
   }
 
-  async remove(id: number) {
-    const message = await this.messagesRepository.findOneBy({ id });
+  async remove(id: number, tokenPayload: TokenPayloadDto) {
+
+    const message = await this.findOne(id);
+
+    if (message.from.id !== tokenPayload.sub) {
+      throw new ForbiddenException("Este recado não é seu!");
+    }
 
     if (!message) return this.throwNotFoundError();
 

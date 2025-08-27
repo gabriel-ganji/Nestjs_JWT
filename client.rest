@@ -50,25 +50,27 @@ GET {{baseUrl}}/person/1
 #For testing whiteList: true
 POST {{baseUrl}}/person/
 Content-Type: application/json
+Authorization: Bearer {{authToken}} 
 
 {
-    "email": "jhon2@gmail.com",
-    "name": "Gabriel Rodrigues Fernandes",
+    "email": "Joseph@gmail.com",
+    "name": "Joseph Jr",
     "password": "123456"
 }
 
 ###Update a person
-PATCH {{baseUrl}}/person/1/
+PATCH {{baseUrl}}/person/13/
 Content-Type: application/json
+Authorization: Bearer {{authToken}} 
 
 {
-    "name": "Gabriel Rodrigues Fernandes",
-    "password": "aaaaa"
+    "name": "Joseph Jr Harold",
+    "password": "Senha123!"
 }
 
 ###Delete a person
-DELETE {{baseUrl}}/person/7/
-
+DELETE {{baseUrl}}/person/11/
+Authorization: Bearer {{authToken}} 
 
 
 ###AUTH
@@ -78,7 +80,7 @@ POST {{baseUrl}}/auth/
 Content-Type: application/json
 
 {
-    "email": "jhon2@gmail.com",
+    "email": "Joseph@gmail.com",
     "password": "123456"
 }
 

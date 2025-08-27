@@ -9,6 +9,7 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
   UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
@@ -21,8 +22,10 @@ import { AddHeaderInterceptor } from 'src/common/interceptors/add-header.interce
 import { TimingConnectionInterceptor } from 'src/common/interceptors/timing-connection.interceptor';
 import { ErrorHandlingInterceptor } from 'src/common/interceptors/error-handling.interceptor';
 import { AuthTokenInterceptor } from 'src/common/interceptors/auth-token.interceptor';
-import { UrlParam } from 'src/common/params/url-param.decorator';
 import { ReqDataParam } from 'src/common/params/req-data-param.decorator';
+import { AuthTokenGuard } from 'src/auth/guards/auth-token.guard';
+import { TokenPayloadDto } from 'src/auth/dto/token-payload.dto';
+import { TokenPayloadParam } from 'src/auth/params/token-payload.param';
 
 @UseInterceptors(AuthTokenInterceptor)
 @Controller('message')
@@ -52,22 +55,28 @@ export class MessageController {
     return this.messageService.findOne(+id);
   }
 
-  //Route to create/insert data in dbS
+  @UseGuards(AuthTokenGuard)
   @Post()
-  create(@Body() createBodyDto: CreateMessageDto) {
-    return this.messageService.create(createBodyDto);
+  create(@Body() createBodyDto: CreateMessageDto, @TokenPayloadParam() tokenPayload: TokenPayloadDto) {
+    return this.messageService.create(createBodyDto, tokenPayload);
   }
 
+  @UseGuards(AuthTokenGuard)
   @Patch(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateMessageDto: UpdateMessageDto,
+    @TokenPayloadParam() tokenPayload: TokenPayloadDto,
   ) {
-    return this.messageService.update(id, updateMessageDto);
+    return this.messageService.update(id, updateMessageDto, tokenPayload);
   }
 
+  @UseGuards(AuthTokenGuard)
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.messageService.remove(id);
+  remove(
+    @Param('id', ParseIntPipe) id: number,
+    @TokenPayloadParam() tokenPayload: TokenPayloadDto,
+  ) {
+    return this.messageService.remove(id, tokenPayload);
   }
 }

@@ -28,21 +28,21 @@ export class AuthService {
 
         const person = await this.personRepository.findOneBy({
             email: loginDto.email,
+            active: true,
         });
 
-        if (person) {
-            passwordIsValid = await this.hashingService.compare(
-                loginDto.password,
-                person.passwordHash
-            )
+        if (!person) {
+            throw new UnauthorizedException('Pessoa não autorizada!');
         }
 
-        if (passwordIsValid) {
-            throwError = false;
-        }
 
-        if (throwError) {
-            throw new UnauthorizedException('Usuário ou senha inválida');
+        passwordIsValid = await this.hashingService.compare(
+            loginDto.password,
+            person.passwordHash
+        )
+
+        if (!passwordIsValid) {
+            throw new UnauthorizedException("Senha inválida!");
         }
 
         return this.createTokens(person);
@@ -89,10 +89,15 @@ export class AuthService {
                 this.jwtConfiguration,
             );
 
-            const user = await this.personRepository.findOneBy({ id: sub });
-            
-            if(!user) {
-                throw new Error('Pessoa não encontrada');
+            const user = await this.personRepository.findOneBy(
+                { 
+                    id: sub,
+                    active: true,
+                }
+            );
+
+            if (!user) {
+                throw new Error('Pessoa não autorizada!');
             }
 
             return this.createTokens(user);

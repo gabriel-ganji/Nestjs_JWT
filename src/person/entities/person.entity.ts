@@ -39,4 +39,8 @@ export class Person {
   //These messages are related to the field "to" in entity message
   @OneToMany(() => Messages, (message) => message.to)
   receivedMessages: Messages[];
+
+  @Column({ default: true })
+  active: boolean;
+
 }
